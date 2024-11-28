@@ -1,0 +1,125 @@
+codigo del index 
+import express from 'express';
+import cors from 'cors';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+///controladores
+import { handleImageConversion } from './controllers/imageConverterCtrl.js';
+import { handleConversionHTMLYMD } from './controllers/htmlConvert.js';
+import { PandocController } from './controllers/PandocController.js';
+import {XLSXConverter} from "./controllers/XLSXConverterCtrl.js"
+import fs from 'fs';
+
+//autodocumentacion
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import {swaggerOptions} from "./SwaggerConfig.js"
+//configuraciones generales
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+app.use(cors());
+app.use(express.json()); // Asegúrate de que los datos JSON puedan procesarse
+
+// Directorio temporal para subir archivos
+const tempDir = path.join(__dirname, 'uploads');
+const convertDir = path.resolve('convert')
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, tempDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
+
+// Rutas de la API
+// Genera la especificación de Swagger
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+// Ruta para servir la documentación de Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.post('/convert-image', upload.single('file'), handleImageConversion); // Conversión de imágenes
+app.post('/convert-html-md', upload.single('file'), handleConversionHTMLYMD); // Conversión HTML/Markdown
+app.post('/convert-document', upload.single('file'), PandocController.handleConversionRequest); // Conversión general con Pandoc
+app.post('/convert-xlsx', upload.single('file'), XLSXConverter.handleXLSX); // conversion archivos de excel
+
+
+// Ruta raíz para mostrar los formatos compatibles
+app.get('/', (req, res) => {
+  const PandocControllerFormats = PandocController.getCompatibleFormats();
+  const data = {
+    '/convert-document':PandocControllerFormats ,
+    '/convert-image': {
+      'allow-formats': ['jpg', 'jpeg', 'png', 'webp', 'tiff'],
+    },
+    '/convert-html-md': {
+      'allow-formats': ['html', 'md'],
+    },
+  };
+  res.json(data);
+});
+
+// Endpoint para descargar archivos
+app.get('/download/:fileName', async (req, res) => {
+  const { fileName } = req.params; // Obtener el nombre del archivo desde los parámetros de la URL
+  const filePath = path.join(convertDir, fileName);
+
+  try {
+    // Verificar si el archivo existe
+    await fs.promises.access(filePath);
+
+    // Iniciar la descarga del archivo
+    res.download(filePath, fileName, (err) => {
+      if (err) {
+        console.error(`Error al descargar el archivo: ${err.message}`);
+        res.status(500).json({ error: 'Error al descargar el archivo.' });
+      }
+    });
+  } catch (err) {
+    console.error(`Archivo no encontrado: ${filePath}`);
+    res.status(404).json({ error: 'Archivo no encontrado.' });
+  }
+});
+
+// Iniciar servidor
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor iniciado en http://localhost:${PORT}`);
+});
+
+/convert-image ruta especialisada para convertir imagenes 3 parametros metodo post inputFormat outputFormat y el file (imagen)
+formatos admitidos ['jpg','jpeg', 'png', 'webp', 'tiff']
+si la conversion es exisitosa devuelve un 200ok con un json que contiene el link de descarga para la la imagen
+todos los archivos se guardan unicamnete durante 40 minutos despues de 40mins se perdera permantentemente
+
+/convert-html-md ruta para convertir html a mardown y mardown a html 
+ 3 parametros metodo post inputFormat outputFormat y el file  formatos html y md 
+si es exitosos devuelve un 200 ok con un json que contiene el link de descarga 
+si los parametros de entrada no son correctos devuelve un 400
+si ocurre un problema al convertir devuelve un 500
+
+/convert-xlsx ruta especialicada para conversion de ojas de calculo 3 parametros metodo post inputFormat outputFormat y el file
+formatos soportados ['xlsx', 'xls', 'csv']
+si es exitosos devuelve un 200 ok con un json que contiene el link de descarga 
+si los parametros de entrada no son correctos devuelve un 400
+si ocurre un problema al convertir devuelve un 500
+/ devuelve un json que describe los formatos soportados y las rutas de conversion
+
+/download/:fileName' metodo get recibe como parametro el nombre del archivo y si esta lo devuelbve e incia su descarga
+si no devuelve un 404 y es la ruta que se devuelve en los otros metodos la descarga de archivos es segura debido
+a que los archivos tienen un nombre de hash unico y es imposible que se descargue un archivo de otra persona sin querer
+y solo puedes saber los nombres hash de tus archivos gracias a las respuestas de los demas entpoints
+
+/convert-document ruta general de conversion 3 parametros metodo post inputFormat outputFormat y el file usa pandoc 
+para convertir documentos los formats compatibles de etrada y salida son los soportados por pandoc 
+link de la pagina de pandoc (https://pandoc.org/) y si es exitosos devuelve un 200 ok con un json que contiene el link de descarga 
+si los parametros de entrada no son correctos devuelve un 400
+si ocurre un problema al convertir devuelve un 500 
