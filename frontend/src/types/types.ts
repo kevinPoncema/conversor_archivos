@@ -81,3 +81,14 @@ export const allowFormats = {
   general: Object.values(GeneralFormats), // Agregamos los formatos generales
 };
 
+// Archivo: src/types/types.ts
+
+export interface ConvertedFile {
+  id: string; // Identificador único para el archivo
+  name: string; // Nombre del archivo
+  size: string; // Tamaño formateado del archivo
+  destinationExtension: string; // Extensión de destino
+  creationDate: string; // Fecha de inicio de la conversión (ISO string)
+  isPending: boolean; // Indica si la conversión está en proceso
+  downloadLink: string; // Enlace de descarga (vacío mientras no se complete)
+}

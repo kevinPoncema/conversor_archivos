@@ -72,124 +72,118 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
-// Importa configuraciones externas con formatos y conversiones válidas
-import { allowFormats, validConversions, GeneralFormats, ImageFormats, MarkupFormats,SpreadsheetFormats } from "../types/types"; 
+import { ref, computed,defineEmits } from "vue";
+import { allowFormats, validConversions, GeneralFormats, ImageFormats, MarkupFormats, SpreadsheetFormats } from "../types/types";
+import { convertRequest } from "../services/convertApi"; // Importa la función abstracta
+import { v4 as uuidv4 } from "uuid";
 
-import {submitFile} from "../services/convertApi;"
 // Variables reactivas para el estado del componente
 const file = ref<File | null>(null); // Archivo seleccionado
 const selectedFormat = ref<string>(""); // Formato seleccionado para la conversión
 const outputFormats = ref<string[]>([]); // Formatos disponibles para la conversión
+
 // Computa los formatos aceptados como string para el input
 const acceptFormats = computed(() => {
-  // Combina todos los formatos desde `allowFormats`
   const allFormats = [
     ...allowFormats.images.map((format) => `.${format}`),
     ...allowFormats.markup.map((format) => `.${format}`),
     ...allowFormats.spreadsheets.map((format) => `.${format}`),
     ...allowFormats.general.map((format) => `.${format}`),
   ];
-
-  // Elimina duplicados utilizando un conjunto (`Set`)
-  const uniqueFormats = Array.from(new Set(allFormats));
-
-  // Devuelve los formatos como una cadena separada por comas
-  return uniqueFormats.join(",");
+  return Array.from(new Set(allFormats)).join(","); // Elimina duplicados y genera una cadena
 });
-// Método: Maneja la selección de archivo desde el input
+
+// Métodos: Manejo de archivo
 const handleFileSelect = (event: Event) => {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files[0]) {
-    validateAndAddFile(input.files[0]); // Valida y agrega el archivo seleccionado
+    validateAndAddFile(input.files[0]);
   }
 };
 
-// Método: Maneja el archivo arrastrado y soltado
 const handleDrop = (event: DragEvent) => {
   if (event.dataTransfer && event.dataTransfer.files[0]) {
-    validateAndAddFile(event.dataTransfer.files[0]); // Valida y agrega el archivo arrastrado
+    validateAndAddFile(event.dataTransfer.files[0]);
   }
 };
 
-// Método: Valida el formato del archivo y actualiza el estado
 const validateAndAddFile = (selectedFile: File) => {
-  const fileExtension = getFileExtension(selectedFile.name); // Obtiene la extensión del archivo
+  const fileExtension = getFileExtension(selectedFile.name);
   if (isValidFormat(fileExtension)) {
-    file.value = selectedFile; // Guarda el archivo en el estado
-    fetchOutputFormats(fileExtension); // Genera los formatos de salida dinámicamente
+    file.value = selectedFile;
+    fetchOutputFormats(fileExtension); // Genera formatos de salida
   } else {
     alert(`Formato de archivo no válido: .${fileExtension}`);
   }
 };
 
 const fetchOutputFormats = (inputFormat: string) => {
-  // Verifica si el formato pertenece a imágenes
   if (Object.values(ImageFormats).includes(inputFormat as ImageFormats)) {
-    // Filtra todos los formatos de imágenes excepto el formato actual
-    outputFormats.value = Object.values(ImageFormats).filter(
-      (format) => format !== inputFormat
-    );
-  } 
-  // Verifica si el formato pertenece a marcado
-  else if (Object.values(MarkupFormats).includes(inputFormat as MarkupFormats)) {
-    // Filtra todos los formatos de marcado excepto el formato actual
-    outputFormats.value = Object.values(MarkupFormats).filter(
-      (format) => format !== inputFormat
-    );
-  } 
-  // Verifica si el formato pertenece a hojas de cálculo
-  else if (Object.values(SpreadsheetFormats).includes(inputFormat as SpreadsheetFormats)) {
-    // Filtra todos los formatos de hojas de cálculo excepto el formato actual
-    outputFormats.value = Object.values(SpreadsheetFormats).filter(
-      (format) => format !== inputFormat
-    );
-  } 
-  // Verifica si el formato pertenece a los formatos generales
-  else if (Object.keys(validConversions).includes(inputFormat as GeneralFormats)) {
-    // Usa las conversiones válidas definidas en `validConversions`
+    outputFormats.value = Object.values(ImageFormats).filter((format) => format !== inputFormat);
+  } else if (Object.values(MarkupFormats).includes(inputFormat as MarkupFormats)) {
+    outputFormats.value = Object.values(MarkupFormats).filter((format) => format !== inputFormat);
+  } else if (Object.values(SpreadsheetFormats).includes(inputFormat as SpreadsheetFormats)) {
+    outputFormats.value = Object.values(SpreadsheetFormats).filter((format) => format !== inputFormat);
+  } else if (Object.keys(validConversions).includes(inputFormat as GeneralFormats)) {
     outputFormats.value = validConversions[inputFormat as GeneralFormats] || [];
-  } 
-  // Si no pertenece a ninguno de los casos válidos, deja vacío `outputFormats`
-  else {
+  } else {
     outputFormats.value = [];
   }
-
-  // Selecciona el primer formato como predeterminado si existen opciones
   selectedFormat.value = outputFormats.value.length > 0 ? outputFormats.value[0] : "";
-  console.log("Output formats:", outputFormats.value);
 };
 
-
-// Método: Limpia el archivo seleccionado y reinicia el estado
 const clearFile = () => {
   file.value = null;
   selectedFormat.value = "";
   outputFormats.value = [];
 };
 
-// Método: Formatea el tamaño del archivo para mostrarlo en KB o MB
 const formatSize = (size: number) => {
   const kb = size / 1024;
   const mb = kb / 1024;
   return mb >= 1 ? `${mb.toFixed(2)} MB` : `${kb.toFixed(2)} KB`;
 };
+const emit = defineEmits(["conversion-started","conversion-completed"]);
 
-// Método: Envía el archivo y el formato al servidor para la conversión
+const submitFile = async () => {
+  if (!file.value || !selectedFormat.value) {
+    alert("Por favor, seleccione un archivo y un formato.");
+    return;
+  }
 
+  // Genera un ID único para este archivo
+  const id = uuidv4();
 
-// Utilidades: Verifica si el formato del archivo es válido
-const isValidFormat = (extension: string): boolean => {
-  // Itera sobre las categorías de `allowFormats` y verifica si el formato pertenece a alguna
-  return Object.values(allowFormats).some((formats) =>
-    formats.includes(extension)
-  );
+  // Emite un evento con los datos del archivo antes de la conversión
+  const conversionData = {
+    id, // ID único
+    name: file.value.name,
+    size: formatSize(file.value.size),
+    destinationExtension: selectedFormat.value,
+    creationDate: new Date().toISOString(), // Fecha actual
+  };
+  emit("conversion-started", conversionData);
+
+  try {
+    let dowloadLink =await convertRequest(file.value, selectedFormat.value);
+
+    // Actualiza el archivo en la lista del componente padre (puedes emitir otro evento si es necesario)
+    emit("conversion-completed", { id, downloadLink: dowloadLink });
+    //alert(`Archivo convertido a ${selectedFormat.value} exitosamente.`);
+    clearFile();
+  } catch (error) {
+    alert(error instanceof Error ? error.message : "Error inesperado.");
+  }
 };
 
 
-// Utilidades: Extrae la extensión del archivo a partir de su nombre
+// Utilidades
+const isValidFormat = (extension: string): boolean => {
+  return Object.values(allowFormats).some((formats) => formats.includes(extension));
+};
+
 const getFileExtension = (fileName: string): string => {
-  return fileName.split(".").pop()?.toLowerCase() || ""; // Obtiene la última parte tras el punto
+  return fileName.split(".").pop()?.toLowerCase() || "";
 };
 </script>
 
