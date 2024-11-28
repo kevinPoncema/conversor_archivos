@@ -1,0 +1,26 @@
+{
+  "name": "conversor_archivos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "conversor_archivos": "file:",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.33.5",
+    "showdown": "^2.1.0",
+    "tmp": "^0.2.3",
+    "turndown": "^7.2.0",
+    "xlsx": "^0.18.5",
+    "zod": "^3.23.8"
+  }
+}
