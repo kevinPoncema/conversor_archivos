@@ -77,7 +77,8 @@ export class PandocController {
       }, 40 * 60 * 1000);
 
       // Responder con la ruta del archivo convertido
-      res.json({ success: true, convertedFilePath: outputFilePath });
+    const fileName = path.basename(outputFilePath);
+      res.json({ success: true, filePath: `/download/${fileName}`,fileName:fileName  });
     } catch (error) {
       console.error("Error durante la conversión:", error);
       res.status(500).json({ error: "Error durante la conversión del archivo." });

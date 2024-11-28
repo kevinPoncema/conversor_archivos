@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convert Document</title>
+</head>
+<body>
+  <h1>Convert Document</h1>
+  <form id="convertForm" action="http://localhost:3000/convert-document" method="POST" enctype="multipart/form-data">
+    <label for="file">Choose a file to convert:</label><br>
+    <input type="file" id="file" name="file" accept=".md,.html,.docx,.odt,.epub,.rtf,.tex,.txt,.pdf,.jupyter" required><br><br>
+    
+    <label for="outputFormat">Select output format:</label><br>
+    <select id="outputFormat" name="outputFormat" required>
+      <option value="markdown">Markdown</option>
+      <option value="html">HTML</option>
+      <option value="pdf">PDF</option>
+      <option value="docx">DOCX</option>
+      <option value="odt">ODT</option>
+      <option value="epub">EPUB</option>
+      <option value="plain">Plain Text</option>
+      <option value="jupyter">Jupyter Notebook</option>
+    </select><br><br>
+    
+    <button type="submit">Convert</button>
+  </form>
+
+  <div id="response" style="margin-top: 20px;"></div>
+
+  <script>
+    const form = document.getElementById('convertForm');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); // Evita que el formulario recargue la página
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          responseDiv.innerHTML = `
+            <p>Conversion successful!</p>
+            <p>Converted file path: <a href="${result.convertedFilePath}" target="_blank">${result.convertedFilePath}</a></p>
+          `;
+        } else {
+          responseDiv.innerHTML = `
+            <p style="color: red;">Error: ${result.error}</p>
+            <p>Compatible formats:</p>
+            <pre>${JSON.stringify(result.compatibleFormats, null, 2)}</pre>
+          `;
+        }
+      } catch (error) {
+        responseDiv.innerHTML = `<p style="color: red;">Unexpected error: ${error.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -83,8 +83,9 @@ export async function handleConversionHTMLYMD(req, res) {
         console.error(`Error al eliminar el archivo: ${outputPath}`, err);
       }
     }, 40 * 60 * 1000);
-
-    res.json({ status: 'successful', filePath: outputPath });
+    // Extraer el nombre del archivo del outputPath
+    const fileName = path.basename(outputPath);
+    res.json({ status: 'successful', filePath: `/download/${fileName}`,fileName:fileName });
   } catch (err) {
     console.error(err);
     res.status(400).json({ error: err.message });
