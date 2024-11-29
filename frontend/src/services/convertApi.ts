@@ -10,7 +10,7 @@ export const convertRequest = (file: File, selectedFormat: string): Promise<{ do
       setTimeout(() => {
         const hypotheticalLink = `https://example.com/download/${file.name}.${selectedFormat}`;
         resolve({ downloadLink: hypotheticalLink });
-      }, 20000); // 20 segundos
+      }, 1000); // 20 segundos
     });
   };
   

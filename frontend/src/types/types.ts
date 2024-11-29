@@ -92,3 +92,9 @@ export interface ConvertedFile {
   isPending: boolean; // Indica si la conversión está en proceso
   downloadLink: string; // Enlace de descarga (vacío mientras no se complete)
 }
+
+export interface apiResponse{
+  status:string,
+  filePath:string,
+  fileName:string
+}

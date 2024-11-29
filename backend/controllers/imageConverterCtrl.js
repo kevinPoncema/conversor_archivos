@@ -69,7 +69,7 @@ export async function handleImageConversion(req, res) {
     const outputPath = await convertImage(file.path, outputFormat);
     const fileName = path.basename(outputPath);
     
-    res.json({ message: 'Conversión exitosa', filePath: `/download/${fileName}`,fileName:fileName });
+    res.json({ status: 'successful', filePath: `/download/${fileName}`,fileName:fileName });
   } catch (err) {
     console.error(err);
     res.status(400).json({ error: err.message });

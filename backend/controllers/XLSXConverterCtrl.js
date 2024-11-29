@@ -101,7 +101,7 @@ export class XLSXConverter {
 
       // Responder con la ruta del archivo convertido
       const fileName = path.basename(outputPath);
-      res.json({ success: true, filePath: `/download/${fileName}`,fileName:fileName });
+      res.json({ status: 'successful', filePath: `/download/${fileName}`,fileName:fileName });
     } catch (error) {
       console.error('Error durante la conversión:', error);
       res.status(500).json({ error: 'Error durante la conversión del archivo.' });

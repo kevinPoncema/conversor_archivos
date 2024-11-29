@@ -2,9 +2,16 @@
     <div class="app-container">
       <!-- Componente para cargar archivos -->
       <FileUpload @conversion-started="handleFileConversion" @conversion-completed="handleConversionCompleted" />
-  
+  <br>
       <!-- Lista de archivos convertidos -->
-      <ConvertedFilesList :files="convertedFiles" />
+      <ConvertedFilesList :files="convertedFiles" @remove-file="removeFile" />
+
+     <br>
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
+      <p class="font-bold">Advertencia</p>
+      <p>Los archivos convertidos serán eliminados automáticamente 40 minutos después de la conversión.</p>
+      <p>Si abandona esta página, los archivos se perderán y no estarán disponibles para descarga.</p>
+    </div>
     </div>
   </template>
   
@@ -41,6 +48,11 @@
       convertedFiles.value[fileIndex].isPending = false;
       convertedFiles.value[fileIndex].downloadLink = downloadLink;
     }
+  };
+  
+  // Maneja la eliminación de un archivo después de 1 minuto
+  const removeFile = (id: string) => {
+    convertedFiles.value = convertedFiles.value.filter((file) => file.id !== id);
   };
   </script>
   
