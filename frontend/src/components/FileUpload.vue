@@ -165,10 +165,12 @@ const submitFile = async () => {
   emit("conversion-started", conversionData);
 
   try {
-    let dowloadLink =await convertRequest(file.value, selectedFormat.value);
+  const inputExtension = getFileExtension(file.value.name);
+
+    let apiResponse =await convertRequest(file.value, selectedFormat.value,inputExtension);
 
     // Actualiza el archivo en la lista del componente padre (puedes emitir otro evento si es necesario)
-    emit("conversion-completed", { id, downloadLink: dowloadLink });
+    emit("conversion-completed", { id, downloadLink: apiResponse.filePath });
     //alert(`Archivo convertido a ${selectedFormat.value} exitosamente.`);
     clearFile();
   } catch (error) {
