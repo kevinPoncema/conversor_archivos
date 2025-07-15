@@ -1,95 +1,90 @@
-# Proyecto de Conversión de Archivos
+# 🚀 **Proyecto de Conversión de Archivos**
 
-Este proyecto no fue diseñado como una alternativa profesional o comercial, sino como una prueba técnica para demostrar mis habilidades en **backend**, que es mi área de especialización, y en **frontend**, que aunque no es mi fuerte, logré construir algo funcional y bien logrado.
-
-## Propósito del Proyecto
-
-El objetivo principal fue mostrar mi capacidad para trabajar con:
-- **Backend**: Desarrollo de una API robusta para la conversión de archivos.
-- **Frontend**: Construcción de una interfaz funcional para interactuar con la API.
-- **Asincronía y manejo de archivos**: Implementación eficiente de procesos de larga duración.
-- **Contenedores Docker**: Creación de una imagen personalizada para el backend con dependencias específicas.
-
-## Características del Proyecto
-
-- **Conversión de archivos**: 
-  - Soporte para múltiples formatos (imágenes, documentos, hojas de cálculo y marcado).
-  - Uso de librerías especializadas para conversiones eficientes.
-- **API Documentada**:
-  - Documentación interactiva con **Swagger** para facilitar su exploración y prueba.
-- **Frontend**:
-  - Interfaz construida con **Vue 3** y **TypeScript**.
-- **Despliegue con Docker**:
-  - Backend encapsulado en un contenedor basado en una imagen personalizada que incluye:
-    - Dependencias de **Node.js**.
-    - **Pandoc** para conversiones avanzadas en Linux.
+Este proyecto fue desarrollado como una **prueba técnica** para demostrar mis habilidades en el desarrollo **backend**, mi especialidad, y mi capacidad para construir un **frontend funcional**, a pesar de no ser mi enfoque principal. El resultado es un sistema sólido que permite la conversión eficiente de archivos en distintos formatos.
 
 ---
 
-## Tecnologías Utilizadas
+## 🎯 **Propósito del Proyecto**
 
-### Backend
-- **Node.js**: Plataforma principal para manejar solicitudes y lógica de conversión.
-- **Librerías de Conversión**:
-  - Módulos especializados para manejar formatos complejos.
-  - **Pandoc**: Herramienta clave para la conversión de documentos en sistemas Linux.
-- **Swagger**: Generación de documentación interactiva para la API.
-
-### Frontend
-- **Vue 3**: Framework utilizado para construir la interfaz.
-- **TypeScript**: Asegura un código más claro y con menos errores.
-- **TailwindCSS**: Permite un diseño limpio y moderno.
-
-### Despliegue
-- **Docker**:
-  - Creación de una imagen personalizada basada en **Node.js**.
-  - Configuración de **Pandoc** y otras dependencias necesarias.
-  - Contenedor aislado y reproducible para el backend.
+El objetivo principal de este proyecto fue demostrar mi capacidad para:
+- **Backend:** Desarrollar una **API robusta** para la conversión de archivos.
+- **Frontend:** Crear una interfaz funcional e intuitiva para interactuar con la API.
+- **Procesos Asíncronos:** Gestionar operaciones de larga duración de manera eficiente.
+- **Despliegue con Docker:** Crear una imagen personalizada con dependencias específicas.
 
 ---
 
-## Funcionalidades Clave
+## 🛠️ **Características del Proyecto**
 
-- **Subida de Archivos**:
-  - Los usuarios pueden subir archivos desde el frontend para su conversión.
-  - Soporte para múltiples formatos de entrada y salida.
-- **Procesos Asíncronos**:
-  - Indicadores en tiempo real durante la conversión.
-  - Manejo de operaciones de larga duración sin bloquear la aplicación.
-- **Eliminación Automática**:
-  - Los archivos convertidos se eliminan automáticamente después de un tiempo definido.
-- **Frontend Funcional**:
-  - Aunque el frontend no es mi especialidad, la interfaz incluye:
-    - Selección de formatos.
-    - Mensajes de estado.
-    - Descarga de los archivos convertidos.
-- **Contenedores Docker**:
-  - El backend se despliega dentro de un contenedor, mostrando mi capacidad para trabajar con contenedores y manejar configuraciones complejas.
+- **Conversión de Archivos:**
+   - Soporte para múltiples formatos (imágenes, documentos, hojas de cálculo y marcado).
+   - Uso de librerías especializadas para conversiones precisas y eficientes.
+- **API Documentada:**
+   - Documentación interactiva con **Swagger** para facilitar la exploración y prueba de endpoints.
+- **Frontend Funcional:**
+   - Interfaz desarrollada con **Vue 3** y **TypeScript**.
+   - Diseño moderno con **TailwindCSS**.
+- **Despliegue con Docker:**
+   - Backend encapsulado en un contenedor Docker personalizado.
+   - Dependencias como **Node.js** y **Pandoc** para conversiones avanzadas en Linux.
 
 ---
 
-## Mi Rol en el Proyecto
-
-Este proyecto fue diseñado para demostrar:
-- **Mis habilidades en backend**:
-  - Construcción de una API funcional y bien estructurada.
-  - Gestión de archivos y asincronía.
-  - Manejo de dependencias complejas como **Pandoc** en un entorno Linux.
-- **Mis capacidades en frontend**:
-  - Construcción de una interfaz que interactúa eficientemente con el backend.
-  - Uso de **Vue 3** y **TypeScript** para desarrollar un frontend moderno.
-  - Diseño limpio usando **TailwindCSS**.
-- **Manejo de Docker**:
-  - Creación de una imagen personalizada.
-  - Despliegue de la API en un contenedor funcional y reproducible.
-
-Aunque no me enfoco en frontend, este proyecto me permitió demostrar que puedo trabajar en ambas áreas para completar un sistema funcional de extremo a extremo.
+## 🌐 **Links de Prueba**
+- **API:** [Documentación Swagger](https://api-converter.kevinponcedev.xyz/api-docs/#/)
+- **Frontend:** [Interfaz Web](https://file-converter.kevinponcedev.xyz/)
 
 ---
 
-## Instrucciones de Despliegue
+## 💻 **Tecnologías Utilizadas**
 
-### Backend (Docker)
+### **Backend**
+- **Node.js:** Plataforma principal para manejar solicitudes y lógica de conversión.
+- **Pandoc:** Conversión avanzada de documentos en Linux.
+- **Swagger:** Documentación interactiva de la API.
+
+### **Frontend**
+- **Vue 3:** Framework moderno para el desarrollo del frontend.
+- **TypeScript:** Tipado estático para un código más robusto.
+- **TailwindCSS:** Diseño limpio y modular.
+
+### **Despliegue**
+- **Docker:**
+   - Imagen personalizada basada en **Node.js**.
+   - Configuración de dependencias necesarias como **Pandoc**.
+   - Contenedor reproducible y aislado.
+
+---
+
+## ⚙️ **Funcionalidades Clave**
+
+- **Subida de Archivos:** Permite cargar archivos para su conversión en múltiples formatos.
+- **Procesos Asíncronos:** Indicadores en tiempo real para conversiones de larga duración.
+- **Eliminación Automática:** Limpieza automática de archivos temporales tras su descarga.
+- **Frontend Intuitivo:** Selección de formatos, estado del proceso y descarga de resultados.
+- **Despliegue Dockerizado:** Garantiza consistencia y facilidad en el despliegue.
+
+---
+
+## 👤 **Mi Rol en el Proyecto**
+
+- **Backend:**
+   - Diseño y desarrollo de una API robusta.
+   - Manejo eficiente de archivos y procesos asíncronos.
+- **Frontend:**
+   - Desarrollo de una interfaz funcional con **Vue 3** y **TypeScript**.
+   - Diseño moderno utilizando **TailwindCSS**.
+- **Despliegue:**
+   - Creación de una imagen Docker personalizada.
+   - Gestión de dependencias complejas en un entorno Linux.
+
+Este proyecto refleja mi capacidad para abordar desafíos tanto en **backend** como en **frontend**, logrando un sistema funcional y eficiente.
+
+---
+
+## 📦 **Instrucciones de Despliegue**
+
+### **Backend (Docker)**
 1. Construir la imagen Docker:
    ```bash
    docker build -t conversor-archivos .
@@ -99,7 +94,7 @@ Aunque no me enfoco en frontend, este proyecto me permitió demostrar que puedo 
    docker run -d -p 3000:3000 conversor-archivos
    ```
 
-### Frontend
+### **Frontend**
 1. Clonar el repositorio y navegar al directorio del frontend:
    ```bash
    cd frontend
@@ -110,17 +105,18 @@ Aunque no me enfoco en frontend, este proyecto me permitió demostrar que puedo 
 
 ---
 
-## ¿Qué aprendí?
+## 📚 **Lecciones Aprendidas**
 
-Este proyecto fue un desafío interesante y me permitió:
-- Perfeccionar mis habilidades en **Node.js** y manejo de archivos.
-- Aprender más sobre **Vue 3** y **TypeScript** para crear una interfaz funcional.
-- Fortalecer mi manejo de **Docker** para crear entornos reproducibles.
-- Gestionar flujos de trabajo asíncronos complejos y asegurar que tanto el frontend como el backend trabajen juntos sin problemas.
+- Perfeccioné mis habilidades en **Node.js** y manejo eficiente de archivos.
+- Aprendí más sobre el desarrollo frontend con **Vue 3** y **TypeScript**.
+- Fortalecí mi conocimiento en el despliegue de aplicaciones con **Docker**.
+- Gestioné flujos de trabajo complejos y procesos asíncronos con éxito.
 
 ---
 
-## Portafolio
+## 🌟 **Portafolio**
 
-Si quieres saber más sobre mí y mis proyectos, visita mi portafolio:
+Si deseas conocer más sobre mí y mis proyectos, visita:
 - **[Kevin Ponce](https://kevinponcedev.xyz/)**
+
+¡Gracias por tu interés en mi trabajo! 🚀✨
