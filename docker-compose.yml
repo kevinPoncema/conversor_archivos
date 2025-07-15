@@ -16,6 +16,6 @@ services:
       dockerfile: frontend-file-converter.dockerfile
     container_name: file-converter-frontend
     ports:
-      - "3004:8080"
+      - "3004:3000"
     restart: unless-stopped
 
