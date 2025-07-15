@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  file-converter-backend:
+    build:
+      context: .
+      dockerfile: file-converter-backend.dockerfile
+    container_name: file-converter-backend
+    ports:
+      - "3003:3000"
+    restart: unless-stopped
+
+  file-converter-frontend:
+    build:
+      context: .
+      dockerfile: frontend-file-converter.dockerfile
+    container_name: file-converter-frontend
+    ports:
+      - "3004:8080"
+    restart: unless-stopped
+
