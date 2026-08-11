@@ -7,13 +7,13 @@ const baseURL = "https://api-converter.kevinponcedev.xyz"; // Base URL para las 
  */
 const getApiEndpoint = (inputFormat: string, outputFormat: string): string | null => {
   if (Object.values(ImageFormats).includes(inputFormat as ImageFormats)) {
-    return "/convert-image";
+    return "/convert/image";
   } else if (Object.values(MarkupFormats).includes(inputFormat as MarkupFormats)) {
-    return "/convert-html-md";
+    return "/convert/html-md";
   } else if (Object.values(SpreadsheetFormats).includes(inputFormat as SpreadsheetFormats)) {
-    return "/convert-xlsx";
+    return "/convert/xlsx";
   } else if (Object.values(GeneralFormats).includes(inputFormat as GeneralFormats)) {
-    return "/convert-document";
+    return "/convert/document";
   }
   return null; // Retorna null si el formato no es válido
 };
