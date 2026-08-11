@@ -16,14 +16,17 @@ RUN wget https://github.com/jgm/pandoc/releases/download/3.1.8/pandoc-3.1.8-1-am
 # Crear el directorio de la aplicación
 WORKDIR /code
 
-# Copiar los archivos de la carpeta "backend" al contenedor
-COPY backend /code
+# Copiar los archivos de la nueva carpeta "backend-v2" al contenedor
+COPY backend-v2 /code
 
-# Instalar las dependencias de Node.js
+# Instalar las dependencias de Node.js (incluyendo devDependencies para compilar)
 RUN npm install
+
+# Construir la aplicación NestJS
+RUN npm run build
 
 # Exponer el puerto 3000 para la aplicación
 EXPOSE 3000
 
-# Comando para iniciar la aplicación
-CMD ["node", "index.js"]
+# Comando para iniciar la aplicación compilada
+CMD ["npm", "run", "start:prod"]

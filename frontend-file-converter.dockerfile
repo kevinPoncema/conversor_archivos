@@ -13,5 +13,5 @@ RUN npm install
 # Expone el puerto 3000 (puedes cambiarlo si usas otro en tu app)
 EXPOSE 3000
 
-# Comando para iniciar la app en modo desarrollo
-CMD ["npm", "run", "serve"]
+# Comando para iniciar la app en modo desarrollo y forzar el puerto 3000
+CMD ["npm", "run", "serve", "--", "--port", "3000"]
