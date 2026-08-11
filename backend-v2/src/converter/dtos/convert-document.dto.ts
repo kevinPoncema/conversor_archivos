@@ -15,15 +15,11 @@ const validConversions: Record<string, string[]> = {
 
 export const ConvertDocumentSchema = z
   .object({
-    inputFormat: z.string({
-      required_error: 'El formato de entrada es requerido',
-    }),
-    outputFormat: z.string({
-      required_error: 'El formato de salida es requerido',
-    }),
+    inputFormat: z.string().min(1, 'El formato de entrada es requerido'),
+    outputFormat: z.string().min(1, 'El formato de salida es requerido'),
   })
   .refine(
-    (data: ConvertDocumentDto) => {
+    (data: any) => {
       const validOutputs = validConversions[data.inputFormat];
       return validOutputs !== undefined && validOutputs.includes(data.outputFormat);
     },
