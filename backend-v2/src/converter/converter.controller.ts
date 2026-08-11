@@ -2,16 +2,14 @@ import { Controller, Post, Body, UploadedFile, UseInterceptors, BadRequestExcept
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
-
 import { ImageConverterService } from './services/image-converter.service';
 import { HtmlConverterService } from './services/html-converter.service';
 import { PandocConverterService } from './services/pandoc-converter.service';
 import { XlsxConverterService } from './services/xlsx-converter.service';
-
-import { ConvertImageDto } from './dtos/convert-image.dto';
-import { ConvertHtmlMdDto } from './dtos/convert-html-md.dto';
-import { ConvertDocumentDto } from './dtos/convert-document.dto';
-import { ConvertXlsxDto } from './dtos/convert-xlsx.dto';
+import type { ConvertImageDto } from './dtos/convert-image.dto';
+import type { ConvertHtmlMdDto } from './dtos/convert-html-md.dto';
+import type { ConvertDocumentDto } from './dtos/convert-document.dto';
+import type { ConvertXlsxDto } from './dtos/convert-xlsx.dto';
 
 // Configuración compartida de Multer
 const multerOptions = {
