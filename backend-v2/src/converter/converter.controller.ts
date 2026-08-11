@@ -1,6 +1,7 @@
-import { Controller, Post, Body, UploadedFile, UseInterceptors, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFile, UseInterceptors, BadRequestException, UsePipes } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 
 import { ImageConverterService } from './services/image-converter.service';
 import { HtmlConverterService } from './services/html-converter.service';
@@ -23,6 +24,7 @@ const multerOptions = {
   }),
 };
 
+@ApiTags('Conversión de Archivos')
 @Controller('convert')
 export class ConverterController {
   constructor(
@@ -33,7 +35,19 @@ export class ConverterController {
   ) { }
 
   @Post('image')
+  @ApiOperation({ summary: 'Convertir Imágenes', description: 'Soporta jpg, jpeg, png, webp, tiff.' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary', description: 'El archivo de imagen a convertir' },
+        outputFormat: { type: 'string', description: 'Formato de salida (ej. png, webp)' },
+      },
+    },
+  })
   @UseInterceptors(FileInterceptor('file', multerOptions))
+  // @UsePipes(new ZodValidationPipe(ConvertImageSchema)) // Descomentar al usar el pipe global
   async convertImage(
     @UploadedFile() file: Express.Multer.File,
     @Body() dto: ConvertImageDto,
@@ -43,6 +57,17 @@ export class ConverterController {
   }
 
   @Post('html-md')
+  @ApiOperation({ summary: 'Convertir Markdown a HTML y viceversa' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary', description: 'El archivo HTML o MD' },
+        outputFormat: { type: 'string', description: 'Formato de salida (html o md)' },
+      },
+    },
+  })
   @UseInterceptors(FileInterceptor('file', multerOptions))
   async convertHtmlMd(
     @UploadedFile() file: Express.Multer.File,
@@ -53,6 +78,18 @@ export class ConverterController {
   }
 
   @Post('document')
+  @ApiOperation({ summary: 'Convertir Documentos (Pandoc)' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        inputFormat: { type: 'string', description: 'Formato original (ej. docx, markdown)' },
+        outputFormat: { type: 'string', description: 'Formato de salida (ej. pdf, epub)' },
+      },
+    },
+  })
   @UseInterceptors(FileInterceptor('file', multerOptions))
   async convertDocument(
     @UploadedFile() file: Express.Multer.File,
@@ -63,6 +100,17 @@ export class ConverterController {
   }
 
   @Post('xlsx')
+  @ApiOperation({ summary: 'Convertir Hojas de Cálculo' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        outputFormat: { type: 'string', description: 'Formato de salida (ej. csv, json, xlsx)' },
+      },
+    },
+  })
   @UseInterceptors(FileInterceptor('file', multerOptions))
   async convertXlsx(
     @UploadedFile() file: Express.Multer.File,
