@@ -16,7 +16,7 @@ import { ConvertXlsxDto } from './dtos/convert-xlsx.dto';
 const multerOptions = {
   storage: diskStorage({
     destination: './uploads',
-    filename: (req, file, cb) => {
+    filename: (req: any, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
       const cleanName = file.originalname.replace(/\s+/g, '_');
       cb(null, `${Date.now()}-${cleanName}`);
     },
