@@ -18,3 +18,16 @@ export function scheduleFileDeletion(filePath: string, delayMs: number = 40 * 60
     }
   }, delayMs);
 }
+
+/**
+ * Elimina un archivo de forma inmediata y asíncrona.
+ * @param filePath La ruta absoluta del archivo a eliminar.
+ */
+export async function deleteFile(filePath: string): Promise<void> {
+  try {
+    await fs.unlink(filePath);
+    logger.log(`Archivo eliminado: ${filePath}`);
+  } catch (err) {
+    logger.error(`Error al eliminar el archivo: ${filePath}`, err);
+  }
+}
