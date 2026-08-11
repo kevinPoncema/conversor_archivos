@@ -31,7 +31,7 @@ export class ImageConverterService {
       scheduleFileDeletion(outputPath);
 
       return {
-        filePath: `/download/${uniqueName}`,
+        filePath: `/convert/download/${uniqueName}`,
         fileName: uniqueName,
       };
     } catch (err) {

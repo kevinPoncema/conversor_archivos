@@ -59,7 +59,7 @@ export class XlsxConverterService {
       scheduleFileDeletion(outputPath);
 
       return {
-        filePath: `/download/${outputFileName}`,
+        filePath: `/convert/download/${outputFileName}`,
         fileName: outputFileName,
       };
     } catch (err: any) {

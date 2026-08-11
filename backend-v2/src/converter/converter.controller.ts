@@ -1,4 +1,7 @@
-import { Controller, Post, Body, UploadedFile, UseInterceptors, BadRequestException, UsePipes } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFile, UseInterceptors, BadRequestException, Get, Param, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import * as path from 'path';
+import * as process from 'process';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
@@ -116,6 +119,17 @@ export class ConverterController {
   ) {
     this.ensureFileExists(file);
     return this.xlsxService.convertDocument(file.path, file.originalname, dto);
+  }
+
+  @Get('download/:fileName')
+  @ApiOperation({ summary: 'Descargar archivo convertido' })
+  downloadFile(@Param('fileName') fileName: string, @Res() res: Response) {
+    const filePath = path.join(process.cwd(), 'convert', fileName);
+    return res.download(filePath, fileName, (err) => {
+      if (err) {
+        res.status(404).json({ error: 'Archivo no encontrado o ya expiró.' });
+      }
+    });
   }
 
   /**

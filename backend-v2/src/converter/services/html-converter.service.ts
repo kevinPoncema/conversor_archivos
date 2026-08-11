@@ -51,7 +51,7 @@ export class HtmlConverterService {
 
       const fileName = path.basename(outputPath);
       return {
-        filePath: `/download/${fileName}`,
+        filePath: `/convert/download/${fileName}`,
         fileName,
       };
     } catch (err) {
