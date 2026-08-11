@@ -11,7 +11,7 @@ import { UnsupportedConversionException } from '../exceptions/unsupported-conver
 export class XlsxConverterService {
   private readonly logger = new Logger(XlsxConverterService.name);
   private readonly convertDir = path.join(process.cwd(), 'convert');
-  
+
   // Formatossoportados de entrada nativamente por tu API anterior
   private readonly supportedInputFormats = ['.xlsx', '.xls', '.csv'];
 
@@ -27,7 +27,7 @@ export class XlsxConverterService {
    */
   async convertDocument(inputPath: string, originalName: string, dto: ConvertXlsxDto): Promise<{ filePath: string; fileName: string }> {
     const inputExt = path.extname(originalName).toLowerCase();
-    
+
     // Validar formato de entrada
     if (!this.supportedInputFormats.includes(inputExt)) {
       await deleteFile(inputPath);
@@ -40,50 +40,53 @@ export class XlsxConverterService {
     const outputPath = path.join(this.convertDir, outputFileName);
 
     try {
-      // 1. Leer el archivo (xlsx maneja automáticamente xlsx, xls, csv)
       const workbook = xlsx.readFile(inputPath);
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
 
-      // 2. Escribir el nuevo archivo según el formato
-      // Previamente, solo tenías csv y xlsx, pero como en el DTO agregué soporte para JSON y TXT, 
-      // lo integré aquí usando las propias utilidades de SheetJS.
       if (outputFormat === 'csv') {
-        const csvData = xlsx.utils.sheet_to_csv(sheet);
-        await fs.writeFile(outputPath, csvData, 'utf-8');
+        await this.exportToCsv(sheet, outputPath);
       } else if (outputFormat === 'json') {
-        const jsonData = xlsx.utils.sheet_to_json(sheet);
-        await fs.writeFile(outputPath, JSON.stringify(jsonData, null, 2), 'utf-8');
+        await this.exportToJson(sheet, outputPath);
       } else if (outputFormat === 'txt') {
-        const txtData = xlsx.utils.sheet_to_txt(sheet);
-        await fs.writeFile(outputPath, txtData, 'utf-8');
+        await this.exportToTxt(sheet, outputPath);
       } else {
-        // Por defecto para xlsx, xls, usamos la escritura binaria
-        const newWorkbook = xlsx.utils.book_new();
-        xlsx.utils.book_append_sheet(newWorkbook, sheet, sheetName);
-        xlsx.writeFile(newWorkbook, outputPath);
+        this.exportToWorkbook(sheet, sheetName, outputPath);
       }
 
       this.logger.log(`Hoja de cálculo convertida con éxito: ${outputFileName}`);
-
-      // 3. Eliminar el archivo original
       await deleteFile(inputPath);
-
-      // 4. Programar la limpieza (Garbage Collection) del archivo final
       scheduleFileDeletion(outputPath);
 
-      // 5. Retornar respuesta
       return {
         filePath: `/download/${outputFileName}`,
         fileName: outputFileName,
       };
     } catch (err: any) {
       this.logger.error(`Error durante la conversión de XLSX para ${inputPath}`, err.message || err);
-      
-      // Intentar borrar en caso de que un archivo corrupto haga fallar a SheetJS
       await deleteFile(inputPath);
-      
       throw new InternalServerErrorException('Error interno durante la conversión de la hoja de cálculo.');
     }
+  }
+
+  private async exportToCsv(sheet: xlsx.WorkSheet, outputPath: string): Promise<void> {
+    const csvData = xlsx.utils.sheet_to_csv(sheet);
+    await fs.writeFile(outputPath, csvData, 'utf-8');
+  }
+
+  private async exportToJson(sheet: xlsx.WorkSheet, outputPath: string): Promise<void> {
+    const jsonData = xlsx.utils.sheet_to_json(sheet);
+    await fs.writeFile(outputPath, JSON.stringify(jsonData, null, 2), 'utf-8');
+  }
+
+  private async exportToTxt(sheet: xlsx.WorkSheet, outputPath: string): Promise<void> {
+    const txtData = xlsx.utils.sheet_to_txt(sheet);
+    await fs.writeFile(outputPath, txtData, 'utf-8');
+  }
+
+  private exportToWorkbook(sheet: xlsx.WorkSheet, sheetName: string, outputPath: string): void {
+    const newWorkbook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(newWorkbook, sheet, sheetName);
+    xlsx.writeFile(newWorkbook, outputPath);
   }
 }
