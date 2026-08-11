@@ -14,10 +14,10 @@ async function bootstrap() {
     .setDescription('API robusta para la conversión de múltiples formatos de archivo (Imágenes, Documentos, HTML/MD, Excel).')
     .setVersion('2.0')
     .build();
-    
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, '[IP_ADDRESS]');
 }
 bootstrap();
